@@ -194,6 +194,26 @@ namespace CraftTicaret.WebUI.Controllers
             }
             return View(uId);
         }
+        public ActionResult SliderResimleri()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult SliderResimEkle(HttpPostedFileBase fileUpload)
+        {
+            if (fileUpload != null)
+            {
+                Image img = Image.FromStream(fileUpload.InputStream);
+                Bitmap bmp = new Bitmap(img, Settings.SliderResimBoyut);
+                string yol = "/Content/SliderResim" + Guid.NewGuid() + Path.GetExtension(fileUpload.FileName);
+                bmp.Save(Server.MapPath(yol));
+                Resim rsm = new Resim();
+                rsm.BuyukYol = yol;
+                Context.Baglanti.Resims.Add(rsm);
+                Context.Baglanti.SaveChanges();
+            }
+            return RedirectToAction("SliderResimleri");
+        }
        
 	}
 }
